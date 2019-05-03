@@ -89,6 +89,13 @@ def get_argparser():
     )
 
     argparser.add_argument(
+        '--run-changes',
+        dest='run_changes',
+        action='store_true',
+        help=('Run image for updated repo without rebuilding')
+    )
+
+    argparser.add_argument(
         '--build-memory-limit',
         help='Total Memory that can be used by the docker build process'
     )
@@ -252,6 +259,8 @@ def make_r2d(argv=None):
     r2d.json_logs = args.json_logs
 
     r2d.dry_run = not args.build
+
+    r2d.run_changes = args.run_changes
 
     if r2d.dry_run:
         # Can't push nor run if we aren't building
