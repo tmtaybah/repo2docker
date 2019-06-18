@@ -36,7 +36,7 @@ def test_dont_find_image():
         instance.images.assert_called_with()
 
 
-def test_find_repo_image():
+def test_find_image_revision():
     images = [{'RepoTags': ['some-org/some-repoSomeHash:latest']}]
 
     with patch('repo2docker.app.docker.APIClient') as FakeDockerClient:
@@ -45,12 +45,13 @@ def test_find_repo_image():
 
         r2d = Repo2Docker()
         r2d.output_image_spec = 'some-org/some-repo'
-        assert r2d.find_repo_image()
+        revision = True
+        assert r2d.find_image(revision)
 
         instance.images.assert_called_with()
 
 
-def test_dont_find_repo_image():
+def test_dont_find_image_revision():
     images = [{'RepoTags': ['some-org/some-image-name:latest']}]
 
     with patch('repo2docker.app.docker.APIClient') as FakeDockerClient:
@@ -59,7 +60,8 @@ def test_dont_find_repo_image():
 
         r2d = Repo2Docker()
         r2d.output_image_spec = 'some-org/some-other-image-name'
-        assert not r2d.find_repo_image()
+        revision = True
+        assert not r2d.find_image(revision)
 
         instance.images.assert_called_with()
 

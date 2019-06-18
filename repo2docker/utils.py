@@ -3,6 +3,8 @@ from functools import partial
 import os
 import re
 import subprocess
+import tempfile
+import tarfile
 
 from traitlets import Integer, TraitError
 
@@ -287,3 +289,16 @@ def check_ref(ref, cwd=None):
             # We'll throw an error later if no refs resolve
             pass
     return hash
+
+# copied from:
+# https://github.com/docker/docker-py/blob/master/tests/helpers.py#L29-L38
+def archive_repo(path):
+    f = tempfile.NamedTemporaryFile()
+    t = tarfile.open(mode='w', fileobj=f)
+
+    abs_path = os.path.abspath(path)
+    t.add(abs_path, arcname=os.path.basename(path), recursive=True)
+
+    t.close()
+    f.seek(0)
+    return f
